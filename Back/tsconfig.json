@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+    "target": "es2021",
+    "module": "commonjs",                                /* Specify what module code is generated. */
+  "esModuleInterop": true,
+  "forceConsistentCasingInFileNames": true,        
+  "allowJs": true,                        
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "rootDir": "./src",
+  "outDir": "./dist",
+}
