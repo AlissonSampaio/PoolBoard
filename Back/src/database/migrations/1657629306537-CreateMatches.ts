@@ -20,7 +20,7 @@ export class CreateMatches1657629306537 implements MigrationInterface {
                     {
                         name: "player_points",
                         type: "numeric",
-                        isNullable: false
+                        isNullable: false,
                     },
                     {
                         name: "opponent_id",
@@ -43,13 +43,17 @@ export class CreateMatches1657629306537 implements MigrationInterface {
                         name: "fk_matches_player",
                         columnNames: ["player_id"],
                         referencedTableName: "players",
-                        referencedColumnNames: ["id"]
+                        referencedColumnNames: ["id"],
+                        onDelete: 'CASCADE',
+                        onUpdate: 'CASCADE'
                     },
                     {
                         name: "fk_matches_opponent",
                         columnNames: ["opponent_id"],
                         referencedTableName: "players",
-                        referencedColumnNames: ["id"]
+                        referencedColumnNames: ["id"],
+                        onDelete: 'CASCADE',
+                        onUpdate: 'CASCADE'
                     }
                 ]
             })

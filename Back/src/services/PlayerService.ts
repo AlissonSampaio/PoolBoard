@@ -24,6 +24,26 @@ export class PlayerService {
         return player;
     }
 
+    async getAll(){
+        const repo = AppDataSource.getRepository(Player);
+
+        const player = await repo.find();
+
+        return player;
+    }
+
+    async get(id: string){
+        const repo = AppDataSource.getRepository(Player);
+ 
+        const player = await repo.findOneBy({id});
+
+        if(!player){
+            return new Error("Event does not exists!");
+        };
+
+        return player;
+    }
+
     async update({id, name, url_image}: PlayerRequest){
         const repo = AppDataSource.getRepository(Player);
 

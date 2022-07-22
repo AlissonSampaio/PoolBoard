@@ -4,7 +4,7 @@
     "main": "index.js",
     "license": "MIT",
     "scripts": {
-        "dev": "ts-node-dev --transpile-only src/server.ts",
+        "start": "ts-node-dev src/server.ts",
         "typeorm": "ts-node-dev node_modules/.bin/typeorm"
     },
     "devDependencies": {
@@ -13,6 +13,9 @@
         "typescript": "^4.7.4"
     },
     "dependencies": {
+        "@types/cors": "^2.8.12",
+        "@types/node": "^18.0.4",
+        "cors": "^2.8.5",
         "express": "^4.18.1",
         "pg": "^8.7.3",
         "postgres": "^3.2.4",

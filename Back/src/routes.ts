@@ -1,31 +1,22 @@
 import { Router } from "express";
-// import { UserController } from "./controllers/UserController";
-// import { EventController } from "./controllers/EventController";
-// import { TicketController } from "./controllers/TicketController";
-// import { TicketTypesController } from "./controllers/TicketTypesController";
+
+import { PlayerController } from "./controllers/PlayerController";
+import { MatchController } from "./controllers/MatchController";
+
 
 const routes = Router();
 
-// routes.post("/users", new UserController().create);
-// routes.put("/users/:id", new UserController().update);
-// routes.delete("/users/:id", new UserController().delete);
+let playerController = new PlayerController();
+routes.post("/player", playerController.create);
+routes.get("/player/:id", playerController.get);
+routes.get("/players", playerController.getAll);
+routes.put("/player/:id", playerController.update);
+routes.delete("/player/:id", playerController.delete);
 
-// routes.post("/events", new EventController().create);
-// routes.get("/events", new EventController().getAll);
-// routes.get("/events/:id", new EventController().get);
-// routes.put("/events/:id", new EventController().update);
-// routes.delete("/events/:id", new EventController().delete);
+let matchController = new MatchController();
+routes.post("/match", matchController.create);
+routes.get("/match/:player_id/:opponent_id", matchController.get)
+routes.put("/match/:player_id/:opponent_id", matchController.update);
 
-// routes.post("/tickets", new TicketController().create);
-// routes.get("/tickets", new TicketController().getAll);
-// routes.get("/tickets/:id", new TicketController().get);
-// routes.put("/tickets/:id", new TicketController().update);
-// routes.delete("/tickets/:id", new TicketController().delete);
-
-// routes.post("/ticket-types", new TicketTypesController().create);
-// routes.get("/ticket-types/:event_id", new TicketTypesController().getAllOfEvent);
-// routes.get("/ticket-types/:id", new TicketTypesController().get);
-// routes.put("/ticket-types/:id", new TicketTypesController().update);
-// routes.delete("/ticket-types/:id", new TicketTypesController().delete);
 
 export { routes };

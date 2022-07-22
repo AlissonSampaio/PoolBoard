@@ -1,8 +1,8 @@
-import { Entity, Column, CreateDateColumn, PrimaryColumn, JoinColumn, OneToOne } from "typeorm";
+import { Entity, Column, CreateDateColumn, PrimaryColumn, JoinColumn, ManyToOne } from "typeorm";
 import { v4 as uuid } from "uuid";
 import { Player } from "./Player";
 
-@Entity("tickets")
+@Entity("matches")
 export class Match {
 
     @PrimaryColumn()
@@ -11,7 +11,7 @@ export class Match {
     @Column()
     player_id: string;
 
-    @OneToOne(() => Player)
+    @ManyToOne(() => Player, { cascade: true })
     @JoinColumn({name: "player_id"})
     player: Player;
     
@@ -21,7 +21,7 @@ export class Match {
     @Column()
     opponent_id: string;
     
-    @OneToOne(() => Player)
+    @ManyToOne(() => Player, { cascade: true })
     @JoinColumn({name: "opponent_id"})
     opponent: Player;
     
@@ -32,7 +32,8 @@ export class Match {
     created_at: Date
 
     constructor() {
-        if(!this.id) {}
-        this.id = uuid();
+        if(!this.id) {
+            this.id = uuid();
+        }
     }
 }

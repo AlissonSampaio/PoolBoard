@@ -6,9 +6,9 @@ export const AppDataSource = new DataSource({
     port: 5432,
     username: "postgres",
     password: "root",
-    database: "sinuca",
+    database: "poolboard",
     entities: ["src/entities/*.{js,ts}"],
     migrations:["src/database/migrations/*.ts"],
     logging: true,
-    synchronize: true,
+    synchronize: true
 })

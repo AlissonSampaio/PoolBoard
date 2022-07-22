@@ -10,7 +10,7 @@ export class CreatePlayers1657575001421 implements MigrationInterface {
                     {
                         name: "id",
                         type: "uuid",
-                        isPrimary: true
+                        isPrimary: true,
                     },
                     {
                         name: "name",
