@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Player } from "../../pages/Home";
+import { Player } from "../../pages/Home/useHome";
 import "./styles.css";
 
 type CardProps = {

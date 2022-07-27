@@ -14,12 +14,30 @@ AppDataSource.initialize()
  
 const app = express();
 
-app.use(express.json());
+const corsOptions = () => {
+    const allowList = String("http://192.168.100.117:3000,http://localhost:3000,http://http://172.16.3.50:3000/")
+        .split(',')
+        .map(domain => domain.trim());
 
-app.use(routes);
+    return  {
+        origin: function (origin: any, callback: Function) {
+            if (allowList.indexOf(origin) !== -1 || !origin) {
+                return callback(null, true)
+            }
+            return callback(new Error('Not allowed by CORS'));
+        },
+        exposedHeaders: 'Date',
+      }
+}
+
+app.use(express.json());
 
 app.use(cors());
 
+app.options('*', cors(corsOptions));
+
+app.use(routes);
+
 app.listen(666, ()=> {
-    console.log("Server startou nessa porra");
+    console.log("Server started");
 });

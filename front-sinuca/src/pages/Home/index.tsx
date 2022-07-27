@@ -1,107 +1,28 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Select from "react-select";
+
 import Card from "../../components/Card";
 
 import vs from "../../assets/images/vs.png";
 import "./styles.css";
 import { data } from "autoprefixer";
-
-export type Player = {
-  id: string;
-  name: string;
-  url_image: string;
-};
-
-type Match = {
-  player_id: string;
-  player_points: number;
-  opponent_id: string;
-  opponent_points: number;
-};
+import useHome from "./useHome";
 
 export default function Home() {
-  const [loadingMatchData, setLoadingMatchData] = useState(false);
-  const [errorLoadingMatchData, setErrorLoadingMatchData] = useState(false);
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [player, setPlayer] = useState<Player>();
-  const [playerPoints, setPlayerPoints] = useState<number>();
-  const [opponent, setOpponent] = useState<Player>();
-  const [opponentPoints, setOpponentPoints] = useState<number>();
-
-  useEffect(() => {
-    getPlayersList();
-  }, []);
-
-  const getPlayersList = async () => {
-    try {
-      const { data } = await axios.get<Player[]>(
-        "http://localhost:666/players"
-      );
-      setPlayers(data);
-      setPlayer(data[0]);
-      setOpponent(data[1]);
-      getMatchPlayersPoints(data[0].id, data[1].id);
-    } catch (error) {
-      console.log("ERRROOOOU");
-      console.log(error);
-    }
-  };
-
-  const getMatchPlayersPoints = async (
-    player_id: string,
-    opponent_id: string
-  ) => {
-    if (loadingMatchData) {
-      return;
-    }
-    setLoadingMatchData(true);
-    setErrorLoadingMatchData(false);
-    try {
-      const { data } = await axios.get<Match>(
-        `http://localhost:666/match/${player_id}/${opponent_id}`
-      );
-      setPlayerPoints(data.player_points);
-      setOpponentPoints(data.opponent_points);
-    } catch (err) {
-      setErrorLoadingMatchData(true);
-    }
-    setLoadingMatchData(false);
-  };
-
-  const createMatch = async (player_id: string, opponent_id: string) => {
-    if (loadingMatchData) {
-      return;
-    }
-    setLoadingMatchData(true);
-    setErrorLoadingMatchData(false);
-    try {
-      await axios.post(`http://localhost:666/match`, {
-        player_id: player_id,
-        player_points: 0,
-        opponent_id: opponent_id,
-        opponent_points: 0,
-      });
-    } catch (err) {
-      setErrorLoadingMatchData(true);
-    }
-    setErrorLoadingMatchData(false);
-  };
-
-  const changePlayer = async (player_param: Player) => {
-    setPlayer(player_param);
-    getMatchPlayersPoints(player_param.id, opponent!.id);
-  };
-
-  const changeOpponent = async (player_param: Player) => {
-    setOpponent(player_param);
-    getMatchPlayersPoints(player!.id, player_param.id);
-  };
-
-  const changePoints = async () => {
-    setPlayerPoints((player_points) =>
-      player_points ? player_points! + 1 : 1
-    );
-  };
+  const {
+    loadingMatchData,
+    player,
+    opponent,
+    errorLoadingMatchData,
+    playerPoints,
+    changePoints,
+    opponentPoints,
+    changePlayer,
+    leftList,
+    rightList,
+    changeOpponent,
+  } = useHome();
 
   if (loadingMatchData || !Boolean(player) || !Boolean(opponent)) {
     return <p>CARREGANDO...</p>;
@@ -116,18 +37,15 @@ export default function Home() {
     );
   }
 
-  const leftList = players?.filter((player) => {
-    return player.id !== opponent!.id;
-  });
-
-  const rightList = players?.filter((opponent) => {
-    return opponent.id !== player!.id;
-  });
-
   return (
     <>
-      <h1>POOL SCOREBOARD</h1>
-      <div className="flex flex-row items-center justify-center">
+      <div className="glow flex items-center justify-center">
+        <h1 className="xl:text-8xl lg:text-7xl md:text-5xl sm:text-2xl text-center self-center">
+          POOL SCOREBOARD
+        </h1>
+      </div>
+
+      <div className="flex flex-col xl:flex-row items-center justify-center">
         {player ? (
           <div>
             <Card
@@ -135,17 +53,24 @@ export default function Home() {
               playerPoints={playerPoints!}
               onClickFunction={changePoints}
             ></Card>
-            <select
+            <Select
               value={player?.name}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              onChange={(event) => {
-                changePlayer(leftList[parseInt(event.target.value)]);
-              }}
-            >
-              {leftList.map((player, index) => {
-                return <option value={index}>{player.name}</option>;
+              options={leftList.map((player, index) => {
+                return { value: player, label: player.name };
               })}
-            </select>
+              styles={{
+                option: (provided, state) => ({
+                  ...provided,
+                  color: "rgb(17 24 39)",
+                  backgroundColor: "rgb(249 250 251)",
+                  bordercolor: "rgb(209 213 219)",
+                }),
+              }}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              onChange={(selectedOption) => {
+                changePlayer(selectedOption?.value);
+              }}
+            ></Select>
           </div>
         ) : null}
         <img src={vs} style={{ alignSelf: "center", maxHeight: "250px" }}></img>
@@ -156,19 +81,26 @@ export default function Home() {
               playerPoints={opponentPoints!}
               onClickFunction={changePoints}
             ></Card>
-            <select
+            <Select
               name="players"
               id="players"
               value={opponent?.name}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              onChange={(event) => {
-                changeOpponent(rightList[parseInt(event.target.value)]);
-              }}
-            >
-              {rightList.map((player, index) => {
-                return <option value={index}>{player.name}</option>;
+              options={rightList.map((player, index) => {
+                return { value: player, label: player.name };
               })}
-            </select>
+              styles={{
+                option: (provided, state) => ({
+                  ...provided,
+                  color: "rgb(17 24 39)",
+                  backgroundColor: "rgb(249 250 251)",
+                  bordercolor: "rgb(209 213 219)",
+                }),
+              }}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              onChange={(selectedOption) => {
+                changeOpponent(selectedOption.value);
+              }}
+            ></Select>
           </div>
         ) : null}
       </div>

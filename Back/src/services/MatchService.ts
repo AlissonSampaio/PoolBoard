@@ -39,6 +39,8 @@ export class MatchService {
  
         const match = await repo.findOneBy({player_id: player_id, opponent_id: opponent_id}) ?? await repo.findOneBy({player_id: opponent_id, opponent_id: player_id});
 
+        console.log(match);
+
         if(!match){
             return new Error("Match does not exists!");
         };

@@ -9,6 +9,6 @@ export const AppDataSource = new DataSource({
     database: "poolboard",
     entities: ["src/entities/*.{js,ts}"],
     migrations:["src/database/migrations/*.ts"],
-    logging: true,
+    logging: false,
     synchronize: true
 })

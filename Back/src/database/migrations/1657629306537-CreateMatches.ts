@@ -21,6 +21,7 @@ export class CreateMatches1657629306537 implements MigrationInterface {
                         name: "player_points",
                         type: "numeric",
                         isNullable: false,
+                        
                     },
                     {
                         name: "opponent_id",
