@@ -1,49 +1,58 @@
 import { Request, Response } from "express";
 import { MatchService } from "../services/MatchService";
 
-export class MatchController{
-    async create(request: Request, response: Response){
-        const { player_id, player_points, opponent_id, opponent_points } = request.body
+export class MatchController {
+  async create(request: Request, response: Response) {
+    const { player_id, player_points, opponent_id, opponent_points } =
+      request.body;
 
-        const service = new MatchService();
+    const service = new MatchService();
 
-        const result = await service.create({
-            player_id, player_points , opponent_id, opponent_points
-        })
+    const result = await service.create({
+      player_id,
+      player_points,
+      opponent_id,
+      opponent_points,
+    });
 
-        if(result instanceof Error){
-            return response.status(400).json(result.message);
-        }
-
-        return response.json();
+    if (result instanceof Error) {
+      return response.status(400).json(result.message);
     }
 
-    async get(request: Request, response: Response){
-        const { player_id, opponent_id } = request.params;
+    return response.json();
+  }
 
-        const service = new MatchService();
+  async get(request: Request, response: Response) {
+    const { player_id, opponent_id } = request.params;
 
-        const match = await service.get({player_id, opponent_id});
+    const service = new MatchService();
 
-        if(!match) {
-            return response.status(400).json("Match does not exists!");
-        }
+    const match = await service.get({ player_id, opponent_id });
 
-        return response.json(match);
+    if (!match) {
+      return response.status(400).json("Match does not exists!");
     }
 
-    async update(request: Request, response: Response){
-        const { player_id, opponent_id } = request.params; 
-        const { player_points, opponent_points } = request.body
+    return response.json(match);
+  }
 
-        const service = new MatchService();
+  async update(request: Request, response: Response) {
+    const { player_id, opponent_id } = request.params;
+    const { player_points, opponent_points } = request.body;
 
-        const result = await service.update({player_id, player_points, opponent_id, opponent_points});
+    const service = new MatchService();
 
-        if(result instanceof Error){
-            return response.status(400).json(result.message);
-        }
+    const result = await service.update({
+      player_id,
+      player_points,
+      opponent_id,
+      opponent_points,
+    });
 
-        return response.status(200).json("Updated successfully");
+    if (result instanceof Error) {
+      return response.status(400).json(result.message);
     }
+
+    return response.status(200).json("Updated successfully");
+  }
 }

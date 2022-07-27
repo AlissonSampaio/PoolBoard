@@ -16,7 +16,8 @@ export default function Home() {
     opponent,
     errorLoadingMatchData,
     playerPoints,
-    changePoints,
+    changePlayerPoints,
+    changeOpponentPoints,
     opponentPoints,
     changePlayer,
     leftList,
@@ -51,7 +52,7 @@ export default function Home() {
             <Card
               player={player}
               playerPoints={playerPoints!}
-              onClickFunction={changePoints}
+              onClickFunction={changePlayerPoints}
             ></Card>
             <Select
               value={player?.name}
@@ -79,7 +80,7 @@ export default function Home() {
             <Card
               player={opponent}
               playerPoints={opponentPoints!}
-              onClickFunction={changePoints}
+              onClickFunction={changeOpponentPoints}
             ></Card>
             <Select
               name="players"

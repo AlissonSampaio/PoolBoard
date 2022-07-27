@@ -23,6 +23,7 @@ export default () => {
   const [playerPoints, setPlayerPoints] = useState<number>();
   const [opponent, setOpponent] = useState<Player>();
   const [opponentPoints, setOpponentPoints] = useState<number>();
+  const [reverseMatch, setReverseMatch] = useState<boolean>(false);
 
   useEffect(() => {
     getPlayersList();
@@ -34,9 +35,9 @@ export default () => {
         "http://172.16.3.50:666/players"
       );
       setPlayers(data);
-      setPlayer(data[0]);
-      setOpponent(data[1]);
-      setupMatch(data[0].id, data[1].id);
+      setPlayer(data[2]);
+      setOpponent(data[3]);
+      setupMatch(data[2].id, data[3].id);
     } catch (error) {
       console.log("ERRROOOOU");
       console.log(error);
@@ -63,12 +64,15 @@ export default () => {
       const { data } = await axios.get<Match>(
         `http://172.16.3.50:666/match/${player_id}/${opponent_id}`
       );
-      if (player?.id == data.player_id) {
+      console.log(data);
+      if (player?.id == data.player_id || opponent?.id == data.opponent_id) {
         setPlayerPoints(data.player_points);
         setOpponentPoints(data.opponent_points);
+        setReverseMatch(false);
       } else {
         setPlayerPoints(data.opponent_points);
         setOpponentPoints(data.player_points);
+        setReverseMatch(true);
       }
       if (isEmpty(data)) {
         setLoadingMatchData(false);
@@ -81,12 +85,73 @@ export default () => {
     return true;
   };
 
-  // const updateMatchPlayerPoints = async (
-  //   player_id: string,
-  //   opponent_id: string
-  // ) => {
+  const updateMatchPlayerPoints = async (
+    player_id: string,
+    opponent_id: string
+  ) => {
+    if (loadingMatchData) {
+      return;
+    }
+    setLoadingMatchData(true);
+    setErrorLoadingMatchData(false);
+    try {
+      if (reverseMatch) {
+        await axios.put(
+          `http://172.16.3.50:666/match/${player_id}/${opponent_id}`,
+          {
+            player_points: opponentPoints!,
+            opponent_points: playerPoints! + 1,
+          }
+        );
+      } else {
+        await axios.put(
+          `http://172.16.3.50:666/match/${player_id}/${opponent_id}`,
+          {
+            player_points: playerPoints! + 1,
+            opponent_points: opponentPoints!,
+          }
+        );
+      }
+    } catch (err) {
+      setErrorLoadingMatchData(true);
+    }
+    setLoadingMatchData(false);
+    return true;
+  };
 
-  // };
+  const updateMatchOpponentPoints = async (
+    player_id: string,
+    opponent_id: string
+  ) => {
+    if (loadingMatchData) {
+      return;
+    }
+    setLoadingMatchData(true);
+    setErrorLoadingMatchData(false);
+    try {
+      if (reverseMatch) {
+        await axios.put(
+          `http://172.16.3.50:666/match/${player_id}/${opponent_id}`,
+          {
+            player_points: opponentPoints! + 1,
+            opponent_points: playerPoints!,
+          }
+        );
+      } else {
+        await axios.put(
+          `http://172.16.3.50:666/match/${player_id}/${opponent_id}`,
+          {
+            player_points: playerPoints!,
+            opponent_points: opponentPoints! + 1,
+          }
+        );
+      }
+    } catch (err) {
+      setErrorLoadingMatchData(true);
+    }
+    setLoadingMatchData(false);
+    return true;
+  };
 
   const createMatch = async (player_id: string, opponent_id: string) => {
     if (loadingMatchData) {
@@ -120,10 +185,18 @@ export default () => {
     setupMatch(player!.id, player_param.id);
   };
 
-  const changePoints = async () => {
-    setPlayerPoints((player_points) =>
+  const changePlayerPoints = async () => {
+    await setPlayerPoints((player_points) =>
       player_points ? player_points! + 1 : 1
     );
+    updateMatchPlayerPoints(player!.id, opponent!.id);
+  };
+
+  const changeOpponentPoints = async () => {
+    await setOpponentPoints((player_points) =>
+      player_points ? player_points! + 1 : 1
+    );
+    updateMatchOpponentPoints(player!.id, opponent!.id);
   };
 
   const leftList = players?.filter((player) => {
@@ -140,7 +213,8 @@ export default () => {
     opponent,
     errorLoadingMatchData,
     playerPoints,
-    changePoints,
+    changePlayerPoints,
+    changeOpponentPoints,
     opponentPoints,
     changePlayer,
     leftList,
