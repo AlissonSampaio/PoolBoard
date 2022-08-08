@@ -100,8 +100,6 @@ export class MatchService {
         opponent_id: player_id,
       }));
 
-    console.log(match);
-
     if (!match) {
       return new Error("Match does not exists!");
     }
@@ -115,9 +113,6 @@ export class MatchService {
     }
 
     try {
-      console.log("call 1");
-      console.log(player_points);
-      console.log(opponent_points);
       match.player_points = player_points;
       match.opponent_points = opponent_points;
 
