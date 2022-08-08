@@ -32,14 +32,13 @@ export default () => {
   const getPlayersList = async () => {
     try {
       const { data } = await axios.get<Player[]>(
-        "http://172.16.3.50:666/players"
+        "http://192.168.100.117:666/players"
       );
       setPlayers(data);
       setPlayer(data[2]);
-      setOpponent(data[3]);
-      setupMatch(data[2].id, data[3].id);
+      setOpponent(data[4]);
+      setupMatch(data[2].id, data[4].id);
     } catch (error) {
-      console.log("ERRROOOOU");
       console.log(error);
     }
   };
@@ -62,9 +61,8 @@ export default () => {
     setErrorLoadingMatchData(false);
     try {
       const { data } = await axios.get<Match>(
-        `http://172.16.3.50:666/match/${player_id}/${opponent_id}`
+        `http://192.168.100.117:666/match/${player_id}/${opponent_id}`
       );
-      console.log(data);
       if (player?.id == data.player_id || opponent?.id == data.opponent_id) {
         setPlayerPoints(data.player_points);
         setOpponentPoints(data.opponent_points);
@@ -97,7 +95,7 @@ export default () => {
     try {
       if (reverseMatch) {
         await axios.put(
-          `http://172.16.3.50:666/match/${player_id}/${opponent_id}`,
+          `http://192.168.100.117:666/match/${player_id}/${opponent_id}`,
           {
             player_points: opponentPoints!,
             opponent_points: playerPoints! + 1,
@@ -105,7 +103,7 @@ export default () => {
         );
       } else {
         await axios.put(
-          `http://172.16.3.50:666/match/${player_id}/${opponent_id}`,
+          `http://192.168.100.117:666/match/${player_id}/${opponent_id}`,
           {
             player_points: playerPoints! + 1,
             opponent_points: opponentPoints!,
@@ -131,7 +129,7 @@ export default () => {
     try {
       if (reverseMatch) {
         await axios.put(
-          `http://172.16.3.50:666/match/${player_id}/${opponent_id}`,
+          `http://192.168.100.117:666/match/${player_id}/${opponent_id}`,
           {
             player_points: opponentPoints! + 1,
             opponent_points: playerPoints!,
@@ -139,7 +137,7 @@ export default () => {
         );
       } else {
         await axios.put(
-          `http://172.16.3.50:666/match/${player_id}/${opponent_id}`,
+          `http://192.168.100.117:666/match/${player_id}/${opponent_id}`,
           {
             player_points: playerPoints!,
             opponent_points: opponentPoints! + 1,
@@ -160,7 +158,7 @@ export default () => {
     setLoadingMatchData(true);
     setErrorLoadingMatchData(false);
     try {
-      await axios.post(`http://172.16.3.50:666/match`, {
+      await axios.post(`http://192.168.100.117:666/match`, {
         player_id: player_id,
         player_points: 0,
         opponent_id: opponent_id,
